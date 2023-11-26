@@ -1,0 +1,74 @@
+/* Основной фон и шрифт для белой темы */
+QWidget {
+    background-color: rgba(255, 255, 255, 1);
+    font-family: 'LA BAMBA LET', Tahoma, Geneva, Verdana, sans-serif;
+    color: rgba(0, 0, 0, 1);
+}
+
+/* Стиль для меток в белой теме */
+QLabel {
+    color: rgba(73, 80, 87, 1);
+    font-size: 16px;
+}
+
+/* Стиль для поля ввода в белой теме */
+QLineEdit {
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(206, 212, 218, 1);
+    border-radius: 10px;
+    padding: 8px;
+    color: rgba(0, 0, 0, 1);
+}
+
+/* Стиль для кнопок в белой теме */
+QPushButton {
+    background-color: rgba(0, 123, 255, 0.59);
+    color: rgba(255, 255, 255, 1);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* При наведении на кнопки в белой теме */
+QPushButton:hover {
+    background-color: rgb(0, 150, 200);
+}
+
+/* Стиль для списка в белой теме */
+QListWidget {
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(206, 212, 218, 1);
+    border-radius: 10px;
+    padding: 8px;
+    color: rgba(0, 0, 0, 1);
+}
+
+/* Стиль для радио кнопок в белой теме */
+QRadioButton::indicator:checked {
+    background-color: rgba(0, 123, 255, 0.59);
+    border: 1px solid #007bff;
+}
+
+/* Стиль для не нажатой радио кнопки в белой теме */
+QRadioButton::indicator:unchecked {
+    /* Фоновый цвет */
+    background-color: rgba(255, 255, 255, 1);
+    /* Граница вокруг индикатора */
+    border: 1px solid rgba(206, 212, 218, 1);
+}
+
+/* Стиль для текста радио кнопки в белой теме */
+QRadioButton {
+    /* Цвет текста */
+    color: rgba(73, 80, 87, 1);
+}
+
+/* При наведении на радиокнопки в белой теме */
+QRadioButton:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+QGroupBox { border-radius: 10px; border: 2px solid gray; margin-top: 1ex; }
+QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center; padding: 0 3px; }
+QTextEdit { border-radius: 10px; border: 1px solid gray; }
