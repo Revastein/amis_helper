@@ -60,6 +60,44 @@ def format_status_message(available_tables, ping_response):
     return message
 
 
+def get_influxdb_status(database):
+    try:
+        common_params = {
+            'host': os.getenv('INFLUXDB_HOST'),
+            'port': int(os.getenv('INFLUXDB_PORT')),
+            'username': os.getenv('INFLUXDB_USERNAME'),
+            'password': os.getenv('INFLUXDB_PASSWORD'),
+            'ssl': os.getenv('INFLUXDB_SSL').lower() == 'true',
+            'verify_ssl': os.getenv('INFLUXDB_VERIFY_SSL').lower() == 'true',
+            'database': database
+        }
+
+        client = InfluxDBClient(**common_params)
+        ping_response = client.request('ping', expected_response_code=204)
+
+        status = ""
+
+        if ping_response.ok:
+            if ping_response.reason.lower() == 'no content':
+                status += "Состояние InfluxDB: ОК (No Content)\n"
+            else:
+                status += f"Состояние InfluxDB: {ping_response.reason}\n"
+        else:
+            status += f"Ошибка при обращении к InfluxDB: {ping_response.reason}\n"
+
+        status += f"Версия InfluxDB: {ping_response.headers.get('X-Influxdb-Version')}\n" \
+                  f"Время обращения (ms): {ping_response.elapsed.total_seconds() * 1000}"
+
+        return status
+
+    except InfluxDBClientError as client_error:
+        return f"Ошибка при работе с InfluxDB: {str(client_error)}"
+    except InfluxDBServerError as server_error:
+        return f"Ошибка сервера InfluxDB: {str(server_error)}"
+    except Exception as e:
+        return f"Необработанная ошибка: {str(e)}"
+
+
 def check_influxdb_minimal_status():
     try:
         common_params = {
@@ -75,8 +113,7 @@ def check_influxdb_minimal_status():
         client = InfluxDBClient(**common_params)
         ping_response = client.request('ping', expected_response_code=204)
 
-        available_tables = ''
-        message = format_status_message(available_tables, ping_response)
+        message = get_influxdb_status(ping_response)
 
         return message
 
