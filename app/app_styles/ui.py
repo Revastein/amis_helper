@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from datetime import datetime
@@ -72,6 +72,10 @@ class DataManagementAppUI(QWidget):
         # Кнопка для проверки статуса InfluxDB
         self.check_influxdb_button = QPushButton('Проверить статус InfluxDB', self)
         self.check_influxdb_button.clicked.connect(self.show_influxdb_status)
+        self.check_common_database_button = QPushButton('Проверить статус общей базы данных', self)
+        self.check_common_database_button.clicked.connect(self.show_common_database_status)
+        self.check_windows_tests_database_button = QPushButton('Проверить статус базы данных тестов на Windows', self)
+        self.check_windows_tests_database_button.clicked.connect(self.show_windows_tests_database_status)
 
         # Бокс для отображения выбранных таблиц
         self.selected_tables_box = QTextEdit(self)
@@ -259,10 +263,46 @@ class DataManagementAppUI(QWidget):
         """Установка значения технического окна"""
         self.tech_window_entry.setText(str(value))
 
+    def show_common_database_status(self):
+        """Показ статуса общей базы данных InfluxDB в диалоговом окне"""
+        status_message = app.app_logic.influxdb_connection.check_influxdb_status_common_database()
+        QMessageBox().information(self, 'Статус таблиц InfluxDB (amis)', status_message)
+
+    def show_windows_tests_database_status(self):
+        """Показ статуса базы данных тестов на Windows InfluxDB в диалоговом окне"""
+        status_message = app.app_logic.influxdb_connection.check_influxdb_status_windows_tests_database()
+        QMessageBox().information(self, 'Статус таблиц InfluxDB (windows tests)', status_message)
+
     def show_influxdb_status(self):
         """Показ статуса InfluxDB в диалоговом окне"""
-        status_message = app.app_logic.influxdb_connection.check_influxdb_status()
-        QMessageBox().information(self, 'Статус InfluxDB', status_message)
+        status_message = app.app_logic.influxdb_connection.check_influxdb_minimal_status()
+        self.center()
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle('Статус InfluxDB')
+        dialog.setGeometry(100, 100, 400, 400)
+
+        status_text_edit = QTextEdit(dialog)
+        status_text_edit.setPlainText(status_message)
+        status_text_edit.setReadOnly(True)
+
+        close_button = QPushButton('Закрыть', dialog)
+        close_button.clicked.connect(dialog.close)
+
+        check_common_button = QPushButton('Проверить статус общей базы данных', dialog)
+        check_common_button.clicked.connect(self.show_common_database_status)
+
+        check_windows_button = QPushButton('Проверить статус базы данных тестов на Windows', dialog)
+        check_windows_button.clicked.connect(self.show_windows_tests_database_status)
+
+        layout = QVBoxLayout()
+        layout.addWidget(status_text_edit)
+        layout.addWidget(check_common_button)
+        layout.addWidget(check_windows_button)
+        layout.addWidget(close_button)
+        dialog.setLayout(layout)
+
+        dialog.exec()
 
     @staticmethod
     def exit_application():
